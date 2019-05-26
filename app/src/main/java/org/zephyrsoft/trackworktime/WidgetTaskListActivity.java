@@ -43,11 +43,8 @@ public class WidgetTaskListActivity extends AppCompatActivity {
 
 	private DAO dao = null;
 
-	private List<Task> tasks = null;
-
 	private WorkTimeTrackerActivity parentActivity = null;
 
-	private ListView tasksListView;
 	private ArrayAdapter<Task> tasksAdapter;
 
 	@Override
@@ -62,40 +59,37 @@ public class WidgetTaskListActivity extends AppCompatActivity {
 
 		setContentView(R.layout.widget_task_list);
 
-		tasksListView = findViewById(R.id.task_list_view);
+        ListView tasksListView = findViewById(R.id.task_list_view);
 
 		dao = Basics.getInstance().getDao();
-		tasks = dao.getAllTasks();
+        List<Task> tasks = dao.getAllTasks();
 		tasksAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, tasks);
 		tasksAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		tasksListView.setAdapter(tasksAdapter);
 
 		tasksListView.setTextFilterEnabled(true);
 
-		tasksListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			@Override
-			public void onItemClick (AdapterView < ? > adapter, View view, int position, long arg){
-				Task selTask = tasksAdapter.getItem(position);
-				if (selTask != null) {
-					Logger.debug("selected {} ", selTask.getName());
-					Context context = getApplicationContext();
-					SharedPreferences widgetSharedPref = context.getSharedPreferences(
-						"org.zephyrsoft.trackworktime.widget_pref_file", Context.MODE_PRIVATE);
-					SharedPreferences.Editor widgetPrefEditor = widgetSharedPref.edit();
-					widgetPrefEditor.putInt("widget_sel_task", selTask.getId());
-					widgetPrefEditor.commit();
-					AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-					ComponentName thisWidget = new ComponentName(context, WorkTimeTrackerWidget.class);
-					int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
-					for (int appWidgetId : appWidgetIds) {
-						Logger.debug("updating widget id={}", appWidgetId);
-						context.startService(new Intent(context, WorkTimeTrackerWidget.WidgetUpdateService.class));
-					}
-				} else {
-					Logger.warn("error during task selection, resultet in null ");
-				}
-				finish();
-			}
-		});
+		tasksListView.setOnItemClickListener((AdapterView<?> adapter, View view, int position, long arg) -> {
+            Task selTask = tasksAdapter.getItem(position);
+            if (selTask != null) {
+                Logger.debug("selected {} ", selTask.getName());
+                Context context = getApplicationContext();
+                SharedPreferences widgetSharedPref = context.getSharedPreferences(
+                    "org.zephyrsoft.trackworktime.widget_pref_file", Context.MODE_PRIVATE);
+                SharedPreferences.Editor widgetPrefEditor = widgetSharedPref.edit();
+                widgetPrefEditor.putInt("widget_sel_task", selTask.getId());
+                widgetPrefEditor.commit();
+                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+                ComponentName thisWidget = new ComponentName(context, WorkTimeTrackerWidget.class);
+                int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
+                for (int appWidgetId : appWidgetIds) {
+                    Logger.debug("updating widget id={}", appWidgetId);
+                    context.startService(new Intent(context, WorkTimeTrackerWidget.WidgetUpdateService.class));
+                }
+            } else {
+                Logger.warn("error during task selection, result is null ");
+            }
+            finish();
+        });
 	}
 }

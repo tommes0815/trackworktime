@@ -94,7 +94,8 @@ public class WorkTimeTrackerWidget extends AppWidgetProvider {
     public void onReceive(final Context context, Intent intent) {
         // If the intent is the one that signals to launch the task selection
         // we launch the activity
-        if(intent.getAction().equals("org.zephyrsoft.trackworktime.WidgetShowTasks")) {
+        String recAction = intent.getAction();
+        if(recAction != null && recAction.equals("org.zephyrsoft.trackworktime.WidgetShowTasks")) {
             Intent showTasksIntent = new Intent(context, WidgetTaskListActivity.class);
             showTasksIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(showTasksIntent);
@@ -151,7 +152,7 @@ public class WorkTimeTrackerWidget extends AppWidgetProvider {
         }
 
         private RemoteViews buildUpdate(Context context) {
-            Intent widgetButtonIntent = null;
+            Intent widgetButtonIntent;
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.work_time_tracker_widget);
             String taskName = "none";
             int taskId = -1;
