@@ -658,9 +658,11 @@ public class WorkTimeTrackerActivity extends AppCompatActivity {
 
 	/**
 	 * Mark task list as changed so it will be re-read from the database the next time the GUI is refreshed.
+	 * Also update the widget in case a task got deleted or renamed (dirty, better do differently?)
 	 */
 	public void refreshTasks() {
 		reloadTasksOnResume = true;
+		Basics.getInstance().safeUpdateWidget();
 	}
 
 	@Override
@@ -841,6 +843,7 @@ public class WorkTimeTrackerActivity extends AppCompatActivity {
 			currentlyShownWeek = new WeekPlaceholder(weekStart);
 		}
 		Basics.getInstance().safeCheckPersistentNotification();
+		Basics.getInstance().safeUpdateWidget();
 
 		refreshView();
 		super.onResume();

@@ -22,11 +22,14 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -233,6 +236,7 @@ public class Basics extends BroadcastReceiver {
 		safeCheckLocationBasedTracking();
 		safeCheckWifiBasedTracking();
 		safeCheckPersistentNotification();
+		safeUpdateWidget();
 	}
 
 	/**
@@ -277,6 +281,24 @@ public class Basics extends BroadcastReceiver {
 	public void safeCheckPersistentNotification() {
 		try {
 			checkPersistentNotification();
+		} catch (Exception e) {
+			e.printStackTrace();
+			ACRA.getErrorReporter().handleException(e);
+		}
+	}
+
+	/**
+	 * Update the widget.
+	 */
+	public void safeUpdateWidget() {
+		try {
+			AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+			ComponentName thisWidget = new ComponentName(context, WorkTimeTrackerWidget.class);
+			int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
+			for (int appWidgetId : appWidgetIds) {
+				Logger.debug("updating widget id={}", appWidgetId);
+				context.startService(new Intent(context, WorkTimeTrackerWidget.WidgetUpdateService.class));
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			ACRA.getErrorReporter().handleException(e);
@@ -331,9 +353,9 @@ public class Basics extends BroadcastReceiver {
 			showNotification(null, "worked " + timeSoFar + " so far", targetTimeString,
 				PendingIntent.getActivity(context, 0, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT),
 				Constants.PERSISTENT_STATUS_ID, true,
-				PendingIntent.getBroadcast(context, 0, buttonOneIntent, PendingIntent.FLAG_CANCEL_CURRENT),
+				PendingIntent.getBroadcast(context, 0, buttonOneIntent, PendingIntent.FLAG_UPDATE_CURRENT),
 				R.drawable.ic_menu_forward, context.getString(R.string.clockInChangeShort),
-				PendingIntent.getBroadcast(context, 0, buttonTwoIntent, PendingIntent.FLAG_CANCEL_CURRENT),
+				PendingIntent.getBroadcast(context, 0, buttonTwoIntent, PendingIntent.FLAG_UPDATE_CURRENT),
 				R.drawable.ic_menu_close_clear_cancel, context.getString(R.string.clockOutShort));
 			Logger.debug("added persistent notification");
 		} else {

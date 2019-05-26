@@ -213,6 +213,7 @@ public class EventListActivity extends AppCompatActivity {
                                     // we have to call this manually when using the DAO directly:
                                     timerManager.updateWeekSum(week);
                                     Basics.getInstance().safeCheckPersistentNotification();
+                                    Basics.getInstance().safeUpdateWidget();
                                     if (success) {
                                         Logger.debug("deleted event with ID {}",
                                                 event.getId());

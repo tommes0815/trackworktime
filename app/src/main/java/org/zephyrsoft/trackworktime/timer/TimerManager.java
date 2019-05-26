@@ -171,6 +171,7 @@ public class TimerManager {
 		}
 		createEvent(minutesToPredate, (taskToLink == null ? null : taskToLink.getId()), TypeEnum.CLOCK_IN, text);
 		Basics.getInstance().safeCheckPersistentNotification();
+		Basics.getInstance().safeUpdateWidget();
 	}
 
 	/**
@@ -182,6 +183,7 @@ public class TimerManager {
 	public void stopTracking(int minutesToPredate) {
 		createEvent(minutesToPredate, null, TypeEnum.CLOCK_OUT, null);
 		Basics.getInstance().safeCheckPersistentNotification();
+		Basics.getInstance().safeUpdateWidget();
 	}
 
 	/**
@@ -584,6 +586,7 @@ public class TimerManager {
 		updateWeekSum(currentWeek);
 		if (!insertedByRestore) {
 			Basics.getInstance().safeCheckPersistentNotification();
+			Basics.getInstance().safeUpdateWidget();
 		}
 	}
 

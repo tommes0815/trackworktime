@@ -21,15 +21,6 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.trackworktime">
-        <receiver android:name=".WorkTimeTrackerWidget">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/work_time_tracker_widget_info" />
-        </receiver>
 
         <meta-data
             android:name="com.google.android.backup.api_key"
@@ -56,12 +47,29 @@
             android:name=".ThirdPartyReceiver"
             android:exported="true"
             tools:ignore="ExportedReceiver"></receiver>
+        <receiver
+                android:name=".WorkTimeTrackerWidget"
+                android:icon="@drawable/ic_launcher"
+                android:label="Widget" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="org.zephyrsoft.trackworktime.WidgetShowTasks" />
+            </intent-filter>
+
+            <meta-data
+                    android:name="android.appwidget.provider"
+                    android:resource="@xml/work_time_tracker_widget_info" />
+        </receiver>
 
         <service
             android:name=".location.LocationTrackerService"
             android:enabled="true"></service>
         <service
             android:name=".location.WifiTrackerService"
+            android:enabled="true"></service>
+
+        <service
+            android:name=".WorkTimeTrackerWidget$WidgetUpdateService"
             android:enabled="true"></service>
 
         <activity
@@ -112,6 +120,15 @@
             android:exported="false"
             android:label="@string/message"
             android:theme="@style/Theme.AppCompat.Dialog"></activity>
+        <activity
+            android:name="org.zephyrsoft.trackworktime.WidgetTaskListActivity"
+            android:theme="@style/Theme.AppCompat.Dialog"
+            android:noHistory="true"
+            android:exported="false"
+            android:label="@string/tasks"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance">
+        </activity>
     </application>
 
 </manifest>

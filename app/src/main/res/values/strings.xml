@@ -167,7 +167,8 @@
     <string name="acraText">Sorry, Track Work Time just crashed. This should not happen. Please send an error report to the developer so the problem can be fixed!\n\nThe report may contain personal data - if so, it will kept strictly confidential and only used to identify the problem.\n</string>
     <string name="acraCommentPrompt">You can add a comment here, e.g. to describe which action produced the error:</string>
     <string name="allData">all data</string>
-    <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
-
+    <string name="widget_so_far">&#160;so far</string>
+    <string name="widget_worked">worked&#160;</string>
+    <string name="tasks">Tasks</string>
 </resources>
